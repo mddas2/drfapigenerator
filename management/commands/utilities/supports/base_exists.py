@@ -1,6 +1,7 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
 from .helper.helper import ViewSetsHelper
+import importlib.resources as resources
 
 class BaseHelper(BaseCommand):
     def __init__(self, app_name, task_type, model_name, utilities=None):
@@ -39,6 +40,13 @@ class BaseHelper(BaseCommand):
         self.api_endpoint = self.model.lower()
         self.router_viewset_name = f"{self.model.lower()}_viewsets"
 
+    def read_data(self,file_path):
+        dir_path = str(os.path.dirname(file_path)).replace('\\','.')
+        file_name = str(os.path.basename(file_path))
+        with resources.open_text(dir_path,file_name) as file:
+            file_content = file.read()
+            return file_content
+    
     def is_exists(self):
         return os.path.exists(self.model_type_stru)
 
@@ -77,13 +85,12 @@ class BaseHelper(BaseCommand):
     def create(self):
         os.makedirs(os.path.dirname(self.model_type_stru), exist_ok=True)
         if self.type not in self.backup_types or not self.is_exists():
-            with open(self.model_type_data_file, 'r') as file:
-                base_data = file.read()
+            base_data = self.read_data(self.model_type_data_file)
+        
         else:
             if self.code_exists():
                 return False
-            with open(self.model_type_date_file_backup, 'r') as file:
-                base_data = file.read()
+            self.read_data(self.model_type_date_file_backup)
             self.import_class()
 
         formatted_data = self.formatter(base_data)
@@ -107,6 +114,3 @@ class BaseHelper(BaseCommand):
             else:
                 if self.create():
                     self.stdout.write(self.style.SUCCESS(f'{self.type} for {self.model} models created successfully!'))
-
-        
-

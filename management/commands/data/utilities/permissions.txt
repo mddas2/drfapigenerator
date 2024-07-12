@@ -10,7 +10,10 @@
 #as example, we can consider as , user,company,job where user is ObjectA,company is ObjectB,job is ObjectC
 
 from rest_framework.permissions import BasePermission
-from accounts import roles
+
+SUPER_ADMIN = 1
+ADMIN = 2
+
 
 def IsAuthenticated(request):
     return bool(request.user and request.user.is_authenticated)
@@ -19,7 +22,7 @@ def SuperAdminLevel(request):
     return bool(IsAuthenticated(request) and request.user.is_superuser)
 
 def AdminLevel(request):
-    return bool(IsAuthenticated(request) and request.user.role in [roles.ADMIN,roles.SUPER_ADMIN])
+    return bool(IsAuthenticated(request) and request.user.role in [ADMIN,SUPER_ADMIN])
 
 def isOwner(request):
     if str(request.user.id) == str(request.data.get('user')):

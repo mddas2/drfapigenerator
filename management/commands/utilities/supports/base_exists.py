@@ -10,6 +10,7 @@ class BaseHelper(BaseCommand):
         self.model = model_name
         self.utilities = utilities
         self.file_extension = '.py'
+        self.data_extension = '.txt'
         self.backup_types = ['routers']
 
         self.initialize_paths()
@@ -18,15 +19,15 @@ class BaseHelper(BaseCommand):
     def initialize_paths(self):
         if self.utilities:
             self.model_type_stru = os.path.join(self.app_name, self.utilities, f"{self.type}{self.file_extension}")
-            self.model_type_data_file = os.path.join('autoapi', 'management', 'commands', 'data', self.utilities, f"{self.type}{self.file_extension}")
-            self.model_type_date_file_backup = os.path.join('autoapi', 'management', 'commands', 'data', self.utilities, f"backup{self.file_extension}")
+            self.model_type_data_file = os.path.join('drfapigenerator', 'management', 'commands', 'data', self.utilities, f"{self.type}{self.data_extension}")
+            self.model_type_date_file_backup = os.path.join('drfapigenerator', 'management', 'commands', 'data', self.utilities, f"backup{self.data_extension}")
         else:
             self.model_type_stru = os.path.join(self.app_name, self.type, f"{self.model.lower()}_{self.type}{self.file_extension}")
             if self.type in self.backup_types:
                 self.model_type_stru = os.path.join(self.app_name, self.type, f"{self.type}{self.file_extension}")
-            self.model_type_data_file = os.path.join('autoapi', 'management', 'commands', 'data', self.type, f"{self.type}{self.file_extension}")
-            self.model_type_date_file_backup = os.path.join('autoapi', 'management', 'commands', 'data', self.type, f"backup{self.file_extension}")
-            self.model_type_date_file_backup_import = os.path.join('autoapi', 'management', 'commands', 'data', self.type, f"import{self.file_extension}")
+            self.model_type_data_file = os.path.join('drfapigenerator', 'management', 'commands', 'data', self.type, f"{self.type}{self.data_extension}")
+            self.model_type_date_file_backup = os.path.join('drfapigenerator', 'management', 'commands', 'data', self.type, f"backup{self.data_extension}")
+            self.model_type_date_file_backup_import = os.path.join('drfapigenerator', 'management', 'commands', 'data', self.type, f"import{self.data_extension}")
 
     def initialize_names(self):
         self.viewset_name = f"{self.model.lower()}Viewsets"

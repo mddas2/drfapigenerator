@@ -106,7 +106,6 @@ class BaseHelper(BaseCommand):
                 self.stdout.write(self.style.ERROR(f'{self.type} for {self.model} models already exists!'))
             else:
                 if self.create():
-                    print("create")
                     self.stdout.write(self.style.SUCCESS(f'{self.type} for {self.model} models created successfully!'))
 
         

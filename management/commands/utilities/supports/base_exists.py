@@ -40,11 +40,14 @@ class BaseHelper(BaseCommand):
         self.api_endpoint = self.model.lower()
         self.router_viewset_name = f"{self.model.lower()}_viewsets"
 
-    def read_data(self,file_path):
+    def read_data(self,file_path,read_or_read_lines):
         dir_path = str(os.path.dirname(file_path)).replace('\\','.')
         file_name = str(os.path.basename(file_path))
         with resources.open_text(dir_path,file_name) as file:
-            file_content = file.read()
+            if read_or_read_lines == 'read':
+                file_content = file.read()
+            else:
+                file_content = file.readlines()
             return file_content
     
     def is_exists(self):
@@ -52,10 +55,9 @@ class BaseHelper(BaseCommand):
 
     def code_exists(self):
         if os.path.exists(self.model_type_stru):
-            with open(self.model_type_stru, 'r') as file:
-                content = file.read()
-                if self.viewset_name in content:
-                    return True
+            content = self.read_data(self.model_type_stru,'read')
+            if self.viewset_name in content:
+                return True
         return False
 
     def formatter(self, base_data):
@@ -73,11 +75,11 @@ class BaseHelper(BaseCommand):
         )
 
     def import_class(self):
-        with open(self.model_type_date_file_backup_import, 'r') as file:
-            data = file.read()
+
+        data = self.read_data(self.model_type_date_file_backup_import)
         formatted_data = self.formatter(data)
-        with open(self.model_type_stru, 'r') as file:
-            lines = file.readlines()
+        lines = self.read_data(self.model_type_stru,'readlines')
+
         with open(self.model_type_stru, 'w') as file:
             lines.insert(2, f"{formatted_data}\n")
             file.writelines(lines)
@@ -85,7 +87,7 @@ class BaseHelper(BaseCommand):
     def create(self):
         os.makedirs(os.path.dirname(self.model_type_stru), exist_ok=True)
         if self.type not in self.backup_types or not self.is_exists():
-            base_data = self.read_data(self.model_type_data_file)
+            base_data = self.read_data(self.model_type_data_file,'read')
         
         else:
             if self.code_exists():

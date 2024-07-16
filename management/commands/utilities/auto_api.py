@@ -16,7 +16,7 @@ class AutoApi:
 
     def app_router_register(self):
         print("registering router")
-        app_router_layout = f"""\n#*********This is {self.app_name} router registered by autoapi*********\nfrom {self.app_name}.routers import routers as {self.app_name}_router\nurlpatterns.append(path('api/',include({self.app_name}_router.auto_api_routers.urls)))"""
+        app_router_layout = f"""\n#*********This is {self.app_name} router registered by autoapi*********\nfrom {self.app_name}.routers.routers import router as {self.app_name}_router\nurlpatterns.append(path('api/',include({self.app_name}_router.urls)))"""
         with open(self.main_project_urls_path,'a') as main_project_urls_obj:
             main_project_urls_obj.write(app_router_layout)
 

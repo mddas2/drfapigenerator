@@ -9,7 +9,7 @@ class {viewset_name}(viewsets.ModelViewSet):
     serializer_class = {model_list_serializers}
     # permission_classes = [{app_name}Permission]
     # authentication_classes = [JWTAuthentication]
-    pagination_class = MyPageNumberPagination
+    #pagination_class = MyPageNumberPagination
     queryset = {model_name}.objects.all()
 
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
@@ -22,7 +22,7 @@ class {viewset_name}(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user_id=self.request.user.id)
+        #return queryset.filter(user_id=self.request.user.id)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

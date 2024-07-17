@@ -41,17 +41,6 @@ class BaseHelper(BaseCommand):
         self.api_endpoint = self.model.lower()
         self.router_viewset_name = f"{self.model.lower()}_viewsets"
 
-    # def read_data(self,file_path,read_or_read_lines):
-    #     dir_path = str(os.path.dirname(file_path)).replace('\\','.')
-    #     file_name = str(os.path.basename(file_path))
-    #     with resources.open_text(dir_path,file_name) as file:
-    #         if read_or_read_lines == 'read':
-    #             file_content = file.read()
-    #         else:
-    #             file_content = file.readlines()
-    #         return file_content
-    
-
     def read_data(self, file_path, read_or_read_lines):
         # Convert file_path to Path object
         path = Path(file_path)
@@ -98,7 +87,7 @@ class BaseHelper(BaseCommand):
 
     def import_class(self):
 
-        data = self.read_data(self.model_type_date_file_backup_import)
+        data = self.read_data(self.model_type_date_file_backup_import,'read')
         formatted_data = self.formatter(data)
         lines = self.read_data(self.model_type_stru,'readlines')
 
@@ -106,15 +95,26 @@ class BaseHelper(BaseCommand):
             lines.insert(2, f"{formatted_data}\n")
             file.writelines(lines)
 
+    def creatInitFile(self,dir_path):
+        dir_path = os.path.dirname(dir_path)
+        init_file_path = os.path.join(dir_path, '__init__.py')
+        print(init_file_path)
+        with open(init_file_path, 'w') as file:
+            file.write('')
+
     def create(self):
+        
         os.makedirs(os.path.dirname(self.model_type_stru), exist_ok=True)
+        self.creatInitFile(self.model_type_stru)
+
         if self.type not in self.backup_types or not self.is_exists():
             base_data = self.read_data(self.model_type_data_file,'read')
         
         else:
+           
             if self.code_exists():
                 return False
-            self.read_data(self.model_type_date_file_backup)
+            base_data = self.read_data(self.model_type_date_file_backup,'read')
             self.import_class()
 
         formatted_data = self.formatter(base_data)

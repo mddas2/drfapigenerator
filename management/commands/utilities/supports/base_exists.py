@@ -2,6 +2,7 @@ import os
 from django.core.management.base import BaseCommand, CommandError
 from .helper.helper import ViewSetsHelper
 import importlib.resources as resources
+from pathlib import Path
 
 class BaseHelper(BaseCommand):
     def __init__(self, app_name, task_type, model_name, utilities=None):
@@ -40,15 +41,36 @@ class BaseHelper(BaseCommand):
         self.api_endpoint = self.model.lower()
         self.router_viewset_name = f"{self.model.lower()}_viewsets"
 
-    def read_data(self,file_path,read_or_read_lines):
-        dir_path = str(os.path.dirname(file_path)).replace('\\','.')
-        file_name = str(os.path.basename(file_path))
-        with resources.open_text(dir_path,file_name) as file:
-            if read_or_read_lines == 'read':
-                file_content = file.read()
-            else:
-                file_content = file.readlines()
-            return file_content
+    # def read_data(self,file_path,read_or_read_lines):
+    #     dir_path = str(os.path.dirname(file_path)).replace('\\','.')
+    #     file_name = str(os.path.basename(file_path))
+    #     with resources.open_text(dir_path,file_name) as file:
+    #         if read_or_read_lines == 'read':
+    #             file_content = file.read()
+    #         else:
+    #             file_content = file.readlines()
+    #         return file_content
+    
+
+    def read_data(self, file_path, read_or_read_lines):
+        # Convert file_path to Path object
+        path = Path(file_path)
+        # Convert the path to a module path by replacing slashes with dots
+        dir_path = '.'.join(path.parts[:-1])
+        # Get the file name
+        file_name = path.name
+        
+        try:
+            with resources.open_text(dir_path, file_name) as file:
+                if read_or_read_lines == 'read':
+                    file_content = file.read()
+                else:
+                    file_content = file.readlines()
+                return file_content
+        except ModuleNotFoundError as e:
+            print(f"Error: {e}")
+            raise e
+
     
     def is_exists(self):
         return os.path.exists(self.model_type_stru)
